@@ -1,0 +1,22 @@
+# ESP-IDF 构建产物（可重新生成，不上传）
+build/
+managed_components/
+sdkconfig.old
+sdkconfig.*.bak
+*.log
+
+# 本地私密配置（含巴法云私钥，不上传；模板见 bemfa_config.example.h）
+main/cloud/bemfa_config.h
+
+# clangd 索引缓存
+.cache/
+
+# IDE 配置
+.vscode/
+.idea/
+.settings/
+
+# 系统杂项
+*.tmp
+Thumbs.db
+.DS_Store

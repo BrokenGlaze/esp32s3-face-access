@@ -1,0 +1,38 @@
+CompileFlags:
+  # ESP-IDF 的 compile_commands.json 里带的是 Xtensa GCC 专用参数，
+  # clangd 不认识会报 "Unknown argument"，这里统一剔除，仅影响编辑器提示。
+  Remove:
+    - -mlongcalls
+    - -mdisable-hardware-atomics
+    - -fno-shrink-wrap
+    - -fstrict-volatile-bitfields
+    - -fno-tree-switch-conversion
+  Add:
+    # clangd 无法识别 xtensa-esp32s3-elf-g++ 这个交叉编译器，会退回宿主目标
+    # （x86_64-pc-windows-msvc），导致 GCC 的 libstdc++ 头文件解析失败，
+    # 连锁报出一大堆 "undeclared identifier" / "no matching function"。
+    # 这里强制指定一个 clang 支持的 ELF 目标，并补回 GCC 交叉编译时的目标宏。
+    - -target
+    - x86_64-unknown-linux-gnu
+    - -D__XTENSA__
+    # 以下目录顺序必须与 xtensa-esp32s3-elf-g++ -E -v 输出一致。
+    # 特别注意 .../c++/14.2.0/xtensa-esp-elf/esp32s3 这个 multilib 目录，
+    # 它存放真正的 bits/c++config.h；缺了它 clangd 会读到错误的配置头，
+    # 进而把 std::is_same / std::vector 解析坏，报出大量假错误。
+    - -isystem
+    - E:/study/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include/c++/14.2.0
+    - -isystem
+    - E:/study/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include/c++/14.2.0/xtensa-esp-elf/esp32s3
+    - -isystem
+    - E:/study/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include/c++/14.2.0/backward
+    - -isystem
+    - E:/study/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include
+    - -isystem
+    - E:/study/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include-fixed
+    - -isystem
+    - E:/study/Espressif/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include
+
+Diagnostics:
+  # lvgl.h / esp_lvgl_port.h 等头文件会被多个头重复包含，
+  # clangd 的 unused-includes 会把这些"直接包含"标成冗余，属于噪音，这里关闭。
+  Suppress: unused-includes

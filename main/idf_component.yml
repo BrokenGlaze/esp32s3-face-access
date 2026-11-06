@@ -1,0 +1,21 @@
+dependencies:
+  # 显示组件
+  espressif/esp_lcd_st7796: ^1.3.0
+
+  # 触摸屏组件
+  cfscn/esp_lcd_touch_ft6x36: ^1.0.8
+
+  # 语音播报组件
+  espressif/es8311: "^1.0.0"
+
+  # 语音播报组件
+  espressif/esp_codec_dev: "~1.3.0"
+
+  # 相机组件
+  espressif/esp32-camera: "^2.1.0"
+
+  # LVGL 组件 核心
+  lvgl/lvgl: "~8.3.11"
+ 
+  # LVGL 组件 适配
+  espressif/esp_lvgl_port: "~1.4.0"
