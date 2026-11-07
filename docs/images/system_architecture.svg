@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1150" width="900" height="1150" role="img" aria-label="ESP32-S3 离线人脸识别门禁系统架构（完整版）">
+  <defs>
+    <marker id="an" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L7 4 L1 7 Z" fill="#52525B"/>
+    </marker>
+    <marker id="ab" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 L7 4 L1 7 Z" fill="#0E7C66"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="1150" fill="#FFFFFF"/>
+
+  <text x="40" y="30" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="17" font-weight="600" fill="#171717">系统架构</text>
+
+  <!-- 云端 -->
+  <rect x="40" y="50" width="820" height="100" rx="8" fill="#FFFFFF" stroke="#71717A" stroke-width="1.5"/>
+  <text x="60" y="76" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="600" fill="#171717">云端（巴法云 IoT 平台）</text>
+  <rect x="60" y="88" width="320" height="50" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="220" y="110" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">巴法云 MQTT Broker</text>
+  <text x="220" y="128" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">在线状态 · 开门事件 · 照片主题</text>
+  <rect x="410" y="88" width="230" height="50" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="525" y="110" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">微信公众号</text>
+  <text x="525" y="128" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">识别通过推送开门通知</text>
+  <rect x="670" y="88" width="170" height="50" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="755" y="110" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">SNTP 服务器</text>
+  <text x="755" y="128" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">网络对时</text>
+
+  <!-- 网络接入 -->
+  <rect x="40" y="180" width="820" height="110" rx="8" fill="#FFFFFF" stroke="#D4D4D8" stroke-width="1.5"/>
+  <text x="60" y="206" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="600" fill="#171717">网络接入（WiFi STA + 云端客户端）</text>
+  <rect x="60" y="218" width="280" height="60" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="200" y="242" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">WiFi Manager</text>
+  <text x="200" y="262" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">触摸屏配网 + Web 配网门户 · 凭证存 NVS</text>
+  <rect x="360" y="218" width="250" height="60" rx="6" fill="#EAF5F2" stroke="#0E7C66" stroke-width="1.5"/>
+  <text x="485" y="242" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#0B5A4A">esp-mqtt 客户端（bemfa_mqtt.c）</text>
+  <text x="485" y="262" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#52525B">发布状态 / 开门事件 · 上传识别照片</text>
+  <rect x="630" y="218" width="210" height="60" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="735" y="242" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">time_sync（SNTP）</text>
+  <text x="735" y="262" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">系统时间同步</text>
+
+  <!-- 门禁业务 -->
+  <rect x="40" y="320" width="820" height="96" rx="8" fill="#EAF5F2" stroke="#0E7C66" stroke-width="1.5"/>
+  <text x="60" y="348" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="600" fill="#0B5A4A">门禁业务逻辑</text>
+  <text x="60" y="374" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">识别成功 → LED 开门指示（GPIO10，PWM 呼吸）→ 3 秒 esp_timer 单次定时自动上锁 · 语音播报结果</text>
+  <text x="60" y="398" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">长按注册（3 秒采录）· 双击清空特征库 · 管理员密码登录 · 识别阈值 50%~95% 可调（NVS 掉电保存）</text>
+
+  <!-- LVGL UI 任务 -->
+  <rect x="40" y="446" width="820" height="84" rx="8" fill="#FFFFFF" stroke="#D4D4D8" stroke-width="1.5"/>
+  <text x="60" y="472" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="600" fill="#171717">LVGL 显示任务</text>
+  <text x="60" y="496" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">三界面切换（识别 / 登录 / 管理员）· 3×4 密码键盘 · 自定义点阵字库渲染中文（规避 CJK 字库 Flash 占用）</text>
+  <text x="60" y="518" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">摄像头预览帧嵌入界面 · 触摸按压期间跳过预览重绘（单帧 SPI 传输约 22ms），保证触摸响应</text>
+
+  <!-- 任务流水线 -->
+  <rect x="40" y="560" width="820" height="160" rx="8" fill="#FFFFFF" stroke="#D4D4D8" stroke-width="1.5"/>
+  <text x="60" y="586" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="600" fill="#171717">FreeRTOS 任务流水线（跨核协作 · 帧缓冲所有权严格管理）</text>
+  <rect x="60" y="600" width="170" height="92" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="145" y="638" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">摄像头采集任务</text>
+  <text x="145" y="658" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">Core1 · DVP RGB565</text>
+  <text x="145" y="676" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">DMA 持续取流</text>
+  <rect x="250" y="600" width="120" height="92" rx="6" fill="#F7F7F8" stroke="#D4D4D8" stroke-dasharray="5 4"/>
+  <text x="310" y="638" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">帧队列</text>
+  <text x="310" y="658" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">满则丢帧</text>
+  <text x="310" y="676" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">不阻塞采集</text>
+  <rect x="390" y="600" width="180" height="92" rx="6" fill="#EAF5F2" stroke="#0E7C66" stroke-width="1.5"/>
+  <text x="480" y="638" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#0B5A4A">AI 推理任务</text>
+  <text x="480" y="658" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#52525B">Core0 · esp-dl 推理</text>
+  <text x="480" y="676" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#52525B">启动信号量闸门 · 让出 CPU</text>
+  <rect x="590" y="600" width="120" height="92" rx="6" fill="#F7F7F8" stroke="#D4D4D8" stroke-dasharray="5 4"/>
+  <text x="650" y="638" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">帧队列</text>
+  <text x="650" y="658" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">预览帧 + 结果帧</text>
+  <text x="650" y="676" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">fb_return 管理所有权</text>
+  <rect x="730" y="600" width="110" height="92" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="785" y="638" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" font-weight="600" fill="#171717">显示消费</text>
+  <text x="785" y="658" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">结果回填 LVGL</text>
+  <text x="60" y="712" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">另：按键状态机任务（四状态 FSM · 40ms 计时消抖）— 单击识别 / 双击清空 / 长按注册 · 采集与推理绑核互不阻塞</text>
+
+  <!-- esp-dl -->
+  <rect x="40" y="750" width="820" height="96" rx="8" fill="#EAF5F2" stroke="#0E7C66" stroke-width="1.5"/>
+  <text x="60" y="776" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="600" fill="#0B5A4A">esp-dl 端侧推理（全程离线）</text>
+  <rect x="60" y="790" width="180" height="44" rx="6" fill="#FFFFFF" stroke="#0E7C66"/>
+  <text x="150" y="817" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">MSR01 粗检（全图筛候选）</text>
+  <rect x="270" y="790" width="200" height="44" rx="6" fill="#FFFFFF" stroke="#0E7C66"/>
+  <text x="370" y="817" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">MNP01 精检（人脸框 + 5 关键点）</text>
+  <rect x="500" y="790" width="210" height="44" rx="6" fill="#FFFFFF" stroke="#0E7C66"/>
+  <text x="605" y="817" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">S16 量化识别（512 维特征）</text>
+  <rect x="740" y="790" width="100" height="44" rx="6" fill="#FFFFFF" stroke="#0E7C66"/>
+  <text x="790" y="817" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">特征比对</text>
+
+  <!-- 存储层 -->
+  <rect x="40" y="876" width="820" height="90" rx="8" fill="#FFFFFF" stroke="#D4D4D8" stroke-width="1.5"/>
+  <text x="60" y="902" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="600" fill="#171717">存储层（掉电保存）</text>
+  <rect x="60" y="914" width="330" height="40" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="225" y="939" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">NVS：WiFi 凭证 · 识别阈值 · 管理员密码</text>
+  <rect x="420" y="914" width="420" height="40" rx="6" fill="#F7F7F8" stroke="#D4D4D8"/>
+  <text x="630" y="939" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">FAT 4MB 分区：自建二进制特征库（校验头）· 注册头像</text>
+
+  <!-- 硬件外设 -->
+  <rect x="40" y="996" width="820" height="76" rx="8" fill="#F7F7F8" stroke="#71717A" stroke-width="1.5"/>
+  <text x="60" y="1022" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="600" fill="#171717">硬件外设（ESP32-S3 · 8MB PSRAM · 双核 LX7）</text>
+  <text x="60" y="1048" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="12" fill="#333333">DVP 摄像头 · ST7796 SPI 屏（PSRAM→内部 RAM 双缓冲）· FT6x36 I2C 触摸 · ES8311 + I2S 语音提示 · PCA9557 I2C IO 扩展 · LED · UART 调试</text>
+
+  <!-- 连接箭头 -->
+  <path d="M 450 150 V 176" fill="none" stroke="#0E7C66" stroke-width="1.5" marker-end="url(#ab)"/>
+  <path d="M 480 176 V 154" fill="none" stroke="#0E7C66" stroke-width="1.5" marker-end="url(#ab)" opacity="0.35"/>
+  <text x="492" y="170" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#0B5A4A">MQTT 发布 / 订阅 · SNTP</text>
+  <path d="M 450 290 V 316" fill="none" stroke="#52525B" stroke-width="1.5" marker-end="url(#an)"/>
+  <text x="462" y="308" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">开门事件上报</text>
+  <path d="M 450 416 V 442" fill="none" stroke="#52525B" stroke-width="1.5" marker-end="url(#an)"/>
+  <path d="M 480 442 V 420" fill="none" stroke="#52525B" stroke-width="1.5" marker-end="url(#an)" opacity="0.35"/>
+  <text x="492" y="436" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">识别结果 / 界面切换</text>
+  <path d="M 480 530 V 556" fill="none" stroke="#52525B" stroke-width="1.5" marker-end="url(#an)"/>
+  <path d="M 510 556 V 534" fill="none" stroke="#52525B" stroke-width="1.5" marker-end="url(#an)" opacity="0.35"/>
+  <text x="522" y="550" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">预览帧 / 推理结果</text>
+  <path d="M 480 696 V 746" fill="none" stroke="#0E7C66" stroke-width="1.5" marker-end="url(#ab)"/>
+  <text x="492" y="728" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#0B5A4A">级联推理</text>
+  <path d="M 790 838 V 872" fill="none" stroke="#52525B" stroke-width="1.5" marker-end="url(#an)"/>
+  <path d="M 820 872 V 842" fill="none" stroke="#52525B" stroke-width="1.5" marker-end="url(#an)" opacity="0.35"/>
+  <text x="700" y="862" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="11" fill="#71717A">特征库读写</text>
+</svg>

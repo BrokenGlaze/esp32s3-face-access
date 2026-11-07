@@ -6,6 +6,16 @@ FreeRTOS 四任务流水线跨核协作，LVGL 触控界面，人脸特征库掉
 
 ## 系统架构
 
+![系统架构](docs/images/system_architecture.svg)
+
+自上而下分为六层：云端（巴法云）→ 网络接入 → 门禁业务 → LVGL 显示任务 → FreeRTOS 任务流水线 → esp-dl 端侧推理，底部为存储层与硬件外设。
+
+- **主链路（绿色）**：摄像头采集（Core1）→ 帧队列 → AI 推理（Core0）→ 帧队列 → LVGL 显示 → 识别成功开门并经 esp-mqtt 上报云端
+- **存储双通道**：NVS 存配置类小数据（WiFi 凭证 / 阈值 / 管理员密码），FAT 分区存自建二进制人脸特征库与注册头像
+- **关键总线约束**：PSRAM 与 SPI Flash 共用 MSPI——写特征库前必须暂停采集并排空帧队列；预览帧单次 SPI 传输约 22ms，触摸期间跳过重绘
+
+### 运行时数据流
+
 ![运行时数据流](docs/images/runtime_dataflow.png)
 
 ## 功能特性
