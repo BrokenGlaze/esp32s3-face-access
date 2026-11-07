@@ -1,0 +1,3 @@
+# 第三方库 esp-dl（乐鑫官方组件，随附模型量化/转换 Python 工具）
+# 标记为 vendored 后 GitHub 语言统计不再计入，徽标将正确显示 C
+components/esp-dl/** linguist-vendored
